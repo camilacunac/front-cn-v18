@@ -40,9 +40,7 @@ import { MatListModule } from '@angular/material/list';
 import { loggingInterceptor } from './interceptor/TestInterceptor';
 import { authInterceptorProvider } from './interceptor/auth-interceptor.interceptor';
 
-export function loggerCallback(logLevel: LogLevel, message: string) {
-  console.log(message);
-}
+export function loggerCallback(logLevel: LogLevel, message: string) {}
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -85,7 +83,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     authRequest: {
       scopes: [...environment.apiConfig.scopes],
     },
-    loginFailedRoute: '/login-failed',
+    loginFailedRoute: '/',
   };
 }
 
@@ -101,7 +99,11 @@ export const appConfig: ApplicationConfig = {
       MatMenuModule
     ),
     provideNoopAnimations(),
-    provideHttpClient(withInterceptorsFromDi(), withFetch(), withInterceptors([authInterceptorProvider])),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withFetch(),
+      withInterceptors([authInterceptorProvider])
+    ),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,

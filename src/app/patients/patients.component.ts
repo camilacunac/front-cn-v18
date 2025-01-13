@@ -20,7 +20,7 @@ export class PatientsComponent implements OnInit {
   mostrarModal = false;
 
   private baseUrl =
-    'http://ec2-44-194-230-117.compute-1.amazonaws.com:8081/bff/pacientes';
+    'https://rumftoezz6.execute-api.us-east-1.amazonaws.com/dev/pacientes';
 
   constructor(private http: HttpClient) {}
 

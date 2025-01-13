@@ -42,10 +42,50 @@ import { NavbarComponent } from './commons/navbar/navbar.component';
 })
 export class AppComponent implements OnInit {
   title = 'front-alertas-medicas';
-
-  constructor(private sessionService: SessionService) {}
+  private readonly _destroying$ = new Subject<void>();
+  constructor(
+    private authService: MsalService,
+    private sessionService: SessionService,
+    private msalBroadcastService: MsalBroadcastService
+  ) {}
 
   ngOnInit(): void {
-    this.sessionService.manejarRetornoDeLogin();
+    this.authService.handleRedirectObservable().subscribe((response) => {
+      if (response && response.account) {
+        const jwtToken = response.idToken;
+
+        localStorage.setItem('jwt', jwtToken);
+      }
+    });
+
+    this.sessionService.actualizarEstadoAutenticacion();
+
+    this.authService.instance.enableAccountStorageEvents(); // Optional - This will enable ACCOUNT_ADDED and ACCOUNT_REMOVED events emitted when a user logs in or out of another tab or window
+    this.msalBroadcastService.msalSubject$
+      .pipe(
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.ACCOUNT_ADDED ||
+            msg.eventType === EventType.ACCOUNT_REMOVED
+        )
+      )
+      .subscribe((result: EventMessage) => {
+        if (this.authService.instance.getAllAccounts().length === 0) {
+          window.location.pathname = '/';
+        } else {
+          this.sessionService.actualizarEstadoAutenticacion();
+        }
+      });
+
+    this.msalBroadcastService.inProgress$
+      .pipe(
+        filter(
+          (status: InteractionStatus) => status === InteractionStatus.None
+        ),
+        takeUntil(this._destroying$)
+      )
+      .subscribe(() => {
+        this.sessionService.actualizarEstadoAutenticacion();
+      });
   }
 }

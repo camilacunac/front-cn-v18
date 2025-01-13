@@ -15,8 +15,8 @@ export const routes: Routes = [
     component: HomeComponent,
     canActivate: [MsalGuard],
   },
-  {
-    path: 'login-failed',
-    component: FailedComponent,
-  },
+  // {
+  //   path: 'login-failed',
+  //   component: FailedComponent,
+  // },
 ];
