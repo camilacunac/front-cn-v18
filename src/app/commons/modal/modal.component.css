@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+.modal {
+  z-index: 1050;
+}
+
+.modal-dialog {
+  margin-top: 10%;
+}

@@ -1,0 +1,36 @@
+<div
+  class="modal fade show"
+  tabindex="-1"
+  [ngClass]="{ 'd-block': mostrar }"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ titulo }}</h5>
+        <button type="button" class="btn-close" (click)="cerrar()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="contenido && contenido.length > 0; else sinContenido">
+          <ul class="list-group">
+            <li *ngFor="let item of contenido" class="list-group-item">
+              <strong>Tipo:</strong> {{ item.tipoAlerta }} <br />
+              <strong>Gravedad:</strong> {{ item.gravedad }} <br />
+              <strong>Mensaje:</strong> {{ item.mensaje }} <br />
+              <strong>Fecha:</strong>
+              {{ item.fechaGeneracion | date : "short" }}
+            </li>
+          </ul>
+        </div>
+        <ng-template #sinContenido>
+          <p>No hay datos para mostrar.</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

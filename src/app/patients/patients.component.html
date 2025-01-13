@@ -1,0 +1,290 @@
+<div class="container mt-4">
+  <h1 class="text-center mb-4">Gestión de Pacientes</h1>
+
+  <!-- Tabla de Pacientes -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Lista de Pacientes
+      <button class="btn btn-light btn-sm float-end" (click)="nuevoPaciente()">
+        Crear Paciente
+      </button>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Estado</th>
+            <th>Fecha de Ingreso</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let paciente of pacientes">
+            <td>{{ paciente.nombre }}</td>
+            <td>{{ paciente.apellido }}</td>
+            <td>{{ paciente.estado }}</td>
+            <td>{{ paciente.fechaIngreso | date }}</td>
+            <td>
+              <div
+                *ngIf="tieneAlertasNoAtendidas(paciente)"
+                class="d-inline-block me-2"
+              >
+                <i
+                  class="bi bi-bell-fill text-danger campana-animada me-2"
+                  (click)="mostrarAlertas(paciente)"
+                ></i>
+                <span class="text-danger">Alerta</span>
+              </div>
+              <button
+                class="btn btn-info btn-sm me-2"
+                (click)="verDetalle(paciente)"
+              >
+                Ver
+              </button>
+              <button
+                class="btn btn-warning btn-sm me-2"
+                (click)="editarPaciente(paciente)"
+              >
+                Editar
+              </button>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="eliminarPaciente(paciente.id)"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detalles del Paciente -->
+  <div *ngIf="pacienteSeleccionado" class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+      Detalles del Paciente: {{ pacienteSeleccionado.nombre }}
+      {{ pacienteSeleccionado.apellido }}
+    </div>
+    <div class="card-body">
+      <p><strong>Sexo:</strong> {{ pacienteSeleccionado.sexo }}</p>
+      <p>
+        <strong>Fecha de Nacimiento:</strong>
+        {{ pacienteSeleccionado.fechaNacimiento | date }}
+      </p>
+      <p><strong>Estado:</strong> {{ pacienteSeleccionado.estado }}</p>
+      <p>
+        <strong>Historial:</strong> {{ pacienteSeleccionado.numeroHistorial }}
+      </p>
+
+      <!-- Tabla de Signos Vitales -->
+      <h5 class="mt-4">Signos Vitales</h5>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Fecha Registro</th>
+            <th>Frecuencia Cardíaca</th>
+            <th>Presión Sistólica</th>
+            <th>Presión Diastólica</th>
+            <th>Saturación de Oxígeno</th>
+            <th>Temperatura</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let senal of pacienteSeleccionado.senalesVitales">
+            <td>{{ senal.fechaRegistro | date : "short" }}</td>
+            <td>{{ senal.frecuenciaCardiaca }}</td>
+            <td>{{ senal.presionArterialSistolica }}</td>
+            <td>{{ senal.presionArterialDiastolica }}</td>
+            <td>{{ senal.saturacionOxigeno }}</td>
+            <td>{{ senal.temperatura }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Formulario de Crear/Editar Paciente -->
+  <div *ngIf="formularioVisible" class="card">
+    <div class="card-header bg-success text-white">
+      {{ pacienteSeleccionado ? "Editar Paciente" : "Crear Paciente" }}
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="guardarPaciente()" #pacienteForm="ngForm">
+        <div class="row">
+          <!-- Nombre -->
+          <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              class="form-control"
+              [(ngModel)]="formularioPaciente.nombre"
+              name="nombre"
+              required
+              maxlength="100"
+              minlength="3"
+            />
+            <div
+              *ngIf="
+                pacienteForm.controls['nombre']?.invalid &&
+                pacienteForm.controls['nombre']?.touched
+              "
+              class="text-danger"
+            >
+              El nombre es obligatorio, debe tener más de 3 caracteres y no
+              puede exceder 100 caracteres.
+            </div>
+          </div>
+
+          <!-- Apellido -->
+          <div class="col-md-6 mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input
+              id="apellido"
+              type="text"
+              class="form-control"
+              [(ngModel)]="formularioPaciente.apellido"
+              name="apellido"
+              required
+              maxlength="100"
+              minlength="3"
+            />
+            <div
+              *ngIf="
+                pacienteForm.controls['apellido']?.invalid &&
+                pacienteForm.controls['apellido']?.touched
+              "
+              class="text-danger"
+            >
+              El apellido es obligatorio, debe tener más de 3 caracteres y no
+              puede exceder 100 caracteres.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Fecha de Nacimiento -->
+          <div class="col-md-6 mb-3">
+            <label for="fechaNacimiento" class="form-label"
+              >Fecha de Nacimiento</label
+            >
+            <input
+              id="fechaNacimiento"
+              type="date"
+              class="form-control"
+              [(ngModel)]="formularioPaciente.fechaNacimiento"
+              name="fechaNacimiento"
+              required
+            />
+            <div
+              *ngIf="
+                pacienteForm.controls['fechaNacimiento']?.invalid &&
+                pacienteForm.controls['fechaNacimiento']?.touched
+              "
+              class="text-danger"
+            >
+              La fecha de nacimiento es obligatoria.
+            </div>
+          </div>
+
+          <!-- Sexo -->
+          <div class="col-md-6 mb-3">
+            <label for="sexo" class="form-label">Sexo</label>
+            <select
+              id="sexo"
+              class="form-control"
+              [(ngModel)]="formularioPaciente.sexo"
+              name="sexo"
+              required
+            >
+              <option value="" disabled>Seleccione</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+            <div
+              *ngIf="
+                pacienteForm.controls['sexo']?.invalid &&
+                pacienteForm.controls['sexo']?.touched
+              "
+              class="text-danger"
+            >
+              El sexo es obligatorio y debe ser 'M' o 'F'.
+            </div>
+          </div>
+        </div>
+
+        <!-- Número de Historial -->
+        <div class="mb-3">
+          <label for="numeroHistorial" class="form-label"
+            >Número de Historial</label
+          >
+          <input
+            id="numeroHistorial"
+            type="text"
+            class="form-control"
+            [(ngModel)]="formularioPaciente.numeroHistorial"
+            name="numeroHistorial"
+            required
+            maxlength="50"
+          />
+          <div
+            *ngIf="
+              pacienteForm.controls['numeroHistorial']?.invalid &&
+              pacienteForm.controls['numeroHistorial']?.touched
+            "
+            class="text-danger"
+          >
+            El número de historial es obligatorio y no puede exceder 50
+            caracteres.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="estado" class="form-label">Estado</label>
+          <select
+            id="estado"
+            class="form-control"
+            [(ngModel)]="formularioPaciente.estado"
+            name="estado"
+            required
+          >
+            <option value="" disabled>Seleccione</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+          <div
+            *ngIf="
+              pacienteForm.controls['estado']?.invalid &&
+              pacienteForm.controls['estado']?.touched
+            "
+            class="text-danger"
+          >
+            El estado es obligatorio y debe ser 'Activo' o 'Inactivo'.
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="pacienteForm.invalid"
+        >
+          Guardar
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">
+          Cancelar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-modal
+  [titulo]="'Alertas del Paciente'"
+  [contenido]="alertasPaciente"
+  [mostrar]="mostrarModal"
+  (cerrarModal)="cerrarModal()"
+></app-modal>

@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+.campana-animada {
+  display: inline-block; /* Necesario para aplicar transform */
+  animation: campana-mover 1s infinite;
+  cursor: pointer;
+  font-size: 24px; /* Ajusta el tamaño según lo necesario */
+}
+
+@keyframes campana-mover {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

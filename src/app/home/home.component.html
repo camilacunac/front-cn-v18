@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col text-center">
+      <h1>Bienvenido a la Plataforma Médica</h1>
+      <p class="text-muted">Gestión de pacientes críticos y alertas médicas</p>
+    </div>
+  </div>
+
+  <!-- Panel de Estadísticas Generales -->
+  <div class="row text-center mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <h5 class="card-title">Pacientes Totales</h5>
+          <p class="card-text display-4">{{ totalPacientes }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-danger shadow">
+        <div class="card-body">
+          <h5 class="card-title">Alertas Activas</h5>
+          <p class="card-text display-4">{{ alertasActivas }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <h5 class="card-title">Alertas Atendidas</h5>
+          <p class="card-text display-4">{{ alertasAtendidas }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Alertas Críticas -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">Alertas Críticas</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let alerta of alertasCriticas">
+            Paciente: {{ alerta.paciente?.nombre }} - {{ alerta.mensaje }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accesos Rápidos -->
+  <div class="row text-center">
+    <div class="col-md-6">
+      <a href="/pacientes" class="btn btn-primary btn-lg btn-block"
+        >Gestionar Pacientes</a
+      >
+    </div>
+    <div class="col-md-6">
+      <a routerLink="/alertas" class="btn btn-danger btn-lg btn-block"
+        >Gestionar Alertas</a
+      >
+    </div>
+  </div>
+</div>
