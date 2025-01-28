@@ -22,6 +22,8 @@ export class PatientsComponent implements OnInit {
   private baseUrl =
     'https://rumftoezz6.execute-api.us-east-1.amazonaws.com/dev/pacientes';
 
+  // private baseUrl = 'http://localhost:8081/bff/pacientes';
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {

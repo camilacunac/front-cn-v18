@@ -23,6 +23,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { SessionService } from './service/session.service';
 import { NavbarComponent } from './commons/navbar/navbar.component';
+import { Alertas } from './commons/Alertas/Alertas.component';
 
 @Component({
   selector: 'app-root',
@@ -38,6 +39,7 @@ import { NavbarComponent } from './commons/navbar/navbar.component';
     MatButtonModule,
     MatMenuModule,
     NavbarComponent,
+    Alertas,
   ],
 })
 export class AppComponent implements OnInit {
